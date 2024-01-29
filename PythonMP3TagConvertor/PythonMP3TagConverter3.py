@@ -1,8 +1,9 @@
 
 import os
-from tokenize import String
+import sys
 import mutagen.id3
 
+print("Python MP3 Tag-Encoding converter by Ammar J. Alhamwi - 2024")
 
 def findMP3s(path):
     for child in os.listdir(path):
@@ -16,12 +17,19 @@ def findMP3s(path):
 
 #musicroot = "C:\\Ammar\\Programming\\Projects\\PythonConvertID3ToUTF-8\\TestSongs"
 #musicroot = "\\\\SINDEEDFLIX\\Media\\Music\\ConvertorTest"
-musicroot = "\\\\SINDEEDFLIX\\Media\\Music"
+#musicroot = "\\\\SINDEEDFLIX\\Media\\Music"
+musicroot = "D:\\Music"
 
 tryencodings = "cp1256", "gb18030", "cp1252"
 
+proceed= input(f'Do you want to convert the encoding of the ID3 tags of all .mp3 files in the folder "{musicroot}" to unicode (y/n)? ')
+if proceed.lower() != 'y':
+    print('Exit the script...')
+    exit()
+    
 fileCounter = 0 #Counter of the files checked.
 saveCounter = 0 #Counter of the files converted.
+
 for path in findMP3s(musicroot):
     try:
         id3 = mutagen.id3.ID3(path)
@@ -29,7 +37,7 @@ for path in findMP3s(musicroot):
         continue
         pass
     fileCounter = fileCounter + 1
-    print('#'+ str(fileCounter) + ' - ' + path)
+    print(f'#{str(fileCounter)} - {path}')
     changed = 0
     for key, value in id3.items():
         print("   Type(value)=" + str(type(value)))
@@ -61,7 +69,7 @@ for path in findMP3s(musicroot):
                         value.text[i] = newValue # value.text[i].encode("iso-8859-1").decode(encoding)
                         changed = changed + 1
                     else:
-                        print('    Subtext "' + str(oldValue) + '" is NOT a string. It is a ' + str(type(oldValue)))
+                        print(f'    Subtext "{str(oldValue)}" is NOT a string. It is a {str(type(oldValue))}')
 
             value.encoding = 3 #UTF-8
     if changed > 0:
